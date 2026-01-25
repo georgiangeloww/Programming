@@ -1,5 +1,8 @@
 
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+
 using std::cout;
 using std::cin;
 using std::endl;
@@ -30,7 +33,7 @@ int main(){
     cin >> h;
     cin >> w;
 
-   
+    srand(time(nullptr));
 
     char** map = createMap(h, w);
     fillRooms(map, h, w);
