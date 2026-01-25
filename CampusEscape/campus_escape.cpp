@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -7,12 +6,12 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-const int H=20;
-const int W=35;
-const int MAX_INV=6;
-const int MAX_ENEMIES=8; //(използвани ~6);
-const int ATK=3;
-const int HP_CAP=20;
+// const int H=20;
+// const int W=35;
+const int MAX_INV = 6;
+const int MAX_ENEMIES = 8; //(използвани ~6);
+const int ATK = 3;
+const int HP_CAP = 20;
 
 
 char** createMap(int h, int w);
@@ -21,13 +20,16 @@ bool isWalkable(char ch);
 void fillRooms(char** map, int h, int w);
 void randomEmptyCell(char** map, int h, int w, int* rr, int* cc);
 void placeRandom(char** map, int h, int w, char ch);
+char readInput();
+void render(char** map, int h, int w,
+           int pr, int pc, int php, int patk, int buffHits, int moves,
+           const char* inv, int invSize, int enemiesAlive);
 
 void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
 
 
 int main(){
-
     int h;
     int w;
     cin >> h;
@@ -35,10 +37,22 @@ int main(){
 
     srand(time(nullptr));
 
+    int pr = 1, pc = 1; // позиция на играча
+    int HP = 14;
+    int atkp = ATK;
+    int buffHits = 0;
+    int moves = 0;
+
+    char inventory[MAX_INV];
+    int invSize = 0;
+    int enemiesAlive = 3;
+
+    bool running = true;
+
     char** map = createMap(h, w);
     fillRooms(map, h, w);
 
-    placeRandom(map, h, w, 'P');
+    // placeRandom(map, h, w, 'P');
     placeRandom(map, h, w, 'D');
     placeRandom(map, h, w, 'E');
     placeRandom(map, h, w, 'C');
@@ -46,16 +60,40 @@ int main(){
     placeRandom(map, h, w, 'K');
     placeRandom(map, h, w, 'X');
 
-    renderMap(map, h, w);
-    
-    destroyMap(map, h);
-    
-   
-    int HP = 14; 
-    int BuffHits = 0; 
-    // D: HP7/ATK2; E: HP10/ATK3;
 
-    // cout << HP << "/" << HP_CAP << ATK << BuffHits;Moves, EnemiesAlive, Items[..]
+    while (running){
+        render(map, h, w,
+            pr, pc, HP, atkp, buffHits, moves,
+            inventory, invSize, enemiesAlive);
+
+        char cmd = readInput();
+
+        int nr = pr;
+        int nc = pc;
+
+        switch (cmd) {
+            case 'W': nr--; break;
+            case 'S': nr++; break;
+            case 'A': nc--; break;
+            case 'D': nc++; break;
+            case 'Q': running = false; continue;
+            default: continue;
+        }
+
+        if (inBounds(nr, nc, h, w) && isWalkable(map[nr][nc])){
+            pr = nr;
+            pc = nc;
+            moves++;
+        }
+    }
+
+
+
+    renderMap(map, h, w);
+    destroyMap(map, h);
+
+    // D: HP7/ATK2; E: HP10/ATK3;
+    // дали да не ги разменя enemiesAlive, Items[..]
 
 
     return 0;
@@ -108,6 +146,43 @@ void placeRandom(char** map, int h, int w, char ch){
     map[r][c] = ch;
 }
 
+char readInput(){
+    char ch;
+    cin >> ch;
+    return ch;
+}
+
+void render(char** map, int h, int w, 
+    int pr, int pc, int php, int patk, int buffHits, int moves, 
+    const char* inv, int invSize, int enemiesAlive){
+    for (int r = 0; r < h; r++) {
+        for (int c = 0; c < w; c++) {
+            if (r == pr && c == pc)
+                cout << 'P';
+            else
+                cout << map[r][c];
+        }
+        cout << endl;
+    }
+
+    cout << endl;
+
+    cout << "HP: " << php << "/" << HP_CAP << "  ATK: " << patk;
+
+    if (buffHits > 0)
+        cout << " (buff " << buffHits << ")";
+
+    cout << endl;
+
+    cout << "Moves: " << moves << endl;
+
+    cout << "Inventory: ";
+    for (int i = 0; i < invSize; i++)
+        cout << inv[i] << ' ';
+    cout << endl;
+
+    cout << "Enemies alive: " << enemiesAlive << endl;
+}
 
 // test render
 void renderMap(char** map, int h, int w){
@@ -129,3 +204,4 @@ void destroyMap(char** map, int h){
     }
     map = nullptr;
 }
+
