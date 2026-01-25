@@ -43,6 +43,7 @@ char** createMap(int h, int w);
 void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
 bool isBounds(int r, int c, int h, int w);
+bool isWalkable(char ch);
 
 
 int main(){
@@ -103,8 +104,9 @@ void destroyMap(char** map, int h){
 }
 
 bool isBounds(int r, int c, int h, int w){
-    if (r >= 0 && r < h && c >= 0 && c < w){
-        return true;
-    }
+    return r >= 0 && r < h && c >= 0 && c < w;
 }
 
+bool isWalkable(char ch){
+    return ch == '.' || ch == 'D' || ch == 'E' || ch == 'C' || ch == 'S' || ch == 'K' || ch == 'X';
+}
