@@ -31,7 +31,8 @@ bool movePlayer(char** map, int h, int w,
                 int* php, int patk, int* buffHits,
                 bool* reachedExit);
 
-void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize);
+void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize, int* php, int* buffHits);
+void useItem(char* inventory, int* invSize, int slot, int* php, int* buffHits);
 
 void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
@@ -77,17 +78,32 @@ int main(){
             inventory, invSize, enemiesAlive);
 
         
-
+        
         int nr = pr;
         int nc = pc;
 
-        switch (cmd) {
-            case 'W': nr--; break;
-            case 'S': nr++; break;
-            case 'A': nc--; break;
-            case 'D': nc++; break;
-            case 'Q': running = false; continue;
-            default: continue;
+        if(cmd == 'Q') break;
+
+        else if(cmd == 'U'){
+            int slot;
+            cin >> slot;
+            slot--;
+            useItem(inventory, &invSize, slot, &HP, &buffHits);
+        }
+
+         else if(cmd == 'W' || cmd == 'A' || cmd == 'S' || cmd == 'D'){
+            if(movePlayer(map, h, w, &pr, &pc, cmd, inventory, &invSize, &HP, atkp, &buffHits, &reachedExit))
+                moves++;
+        }
+
+
+       if(reachedExit && hasKey(inventory, invSize)){
+            cout << "YOU WIN!\n";
+            running = false;
+        }
+        if(HP <= 0){
+        cout << "YOU LOSE!\n";
+        running = false;
         }
 
         if (inBounds(nr, nc, h, w) && isWalkable(map[nr][nc])){
@@ -106,10 +122,6 @@ int main(){
         &buffHits,
         &reachedExit)) moves++; 
 
-    // if (reachedExit) {
-    //     cout << "YOU WIN!" << endl;
-    //     running = false;
-    // }
 
 
     renderMap(map, h, w);
@@ -253,18 +265,48 @@ bool movePlayer(
     return true;
 }
 
-void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize){
-    if(*invSize >= MAX_INV)
-        return;
-
+void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize, int* php, int* buffHits){
     char tile = map[r][c];
 
-    if(tile == 'C' || tile == 'S' || tile == 'K'){
-        inventory[*invSize] = tile;
-        (*invSize)++;
+    if(tile == 'C'){
+        *php += 5;
+        if(*php > HP_CAP) *php = HP_CAP;
         map[r][c] = '.';
     }
+    else if(tile == 'S'){
+        *buffHits = 3;
+        map[r][c] = '.';
+    }
+    else if(tile == 'K'){
+        if(*invSize < MAX_INV){
+            inventory[*invSize] = 'K';
+            (*invSize)++;
+            map[r][c] = '.';
+        }
+    }
 }
+
+void useItem(char* inventory, int* invSize, int slot, int* php, int* buffHits){
+    if(slot < 0 || slot >= *invSize)
+        return;
+
+    char item = inventory[slot];
+
+    if(item == 'C'){
+        *php += 5;
+        if(*php > HP_CAP)
+            *php = HP_CAP;
+    }
+    else if(item == 'S'){
+        *buffHits = 3;
+    }
+
+    for(int i = slot; i < (*invSize)-1; i++)
+        inventory[i] = inventory[i+1];
+    (*invSize)--;
+}
+
+
 
 
 
