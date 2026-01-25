@@ -25,6 +25,12 @@ void render(char** map, int h, int w,
            int pr, int pc, int php, int patk, int buffHits, int moves,
            const char* inv, int invSize, int enemiesAlive);
 
+bool movePlayer(char** map, int h, int w, 
+                int* pr, int* pc, char dir,
+                char* inventory, int* invSize,
+                int* php, int patk, int* buffHits,
+                bool* reachedExit);
+
 void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
 
@@ -42,12 +48,14 @@ int main(){
     int atkp = ATK;
     int buffHits = 0;
     int moves = 0;
+    char cmd = readInput();
 
     char inventory[MAX_INV];
     int invSize = 0;
     int enemiesAlive = 3;
 
     bool running = true;
+    bool reachedExit = false;
 
     char** map = createMap(h, w);
     fillRooms(map, h, w);
@@ -66,7 +74,7 @@ int main(){
             pr, pc, HP, atkp, buffHits, moves,
             inventory, invSize, enemiesAlive);
 
-        char cmd = readInput();
+        
 
         int nr = pr;
         int nc = pc;
@@ -87,6 +95,19 @@ int main(){
         }
     }
 
+
+    if (movePlayer(
+        map, h, w,
+        &pr, &pc, cmd,
+        inventory, &invSize,
+        &HP, atkp,
+        &buffHits,
+        &reachedExit)) moves++; 
+
+    if (reachedExit) {
+        cout << "YOU WIN!" << endl;
+        running = false;
+    }
 
 
     renderMap(map, h, w);
@@ -183,6 +204,54 @@ void render(char** map, int h, int w,
 
     cout << "Enemies alive: " << enemiesAlive << endl;
 }
+
+
+bool movePlayer(
+    char** map, int h, int w,
+    int* pr, int* pc, char dir,
+    char* inventory, int* invSize,
+    int* php, int patk,
+    int* buffHits,
+    bool* reachedExit){
+
+    int nr = *pr;
+    int nc = *pc;
+
+    switch (dir) {
+        case 'W': nr--; break;
+        case 'S': nr++; break;
+        case 'A': nc--; break;
+        case 'D': nc++; break;
+        default: return false;
+    }
+
+    if (!inBounds(nr, nc, h, w))
+        return false;
+
+    char tile = map[nr][nc];
+
+    if (tile == '#')
+        return false;
+
+
+    if (tile == 'C' || tile == 'S' || tile == 'K') {
+        tryPickupItem(map, nr, nc, inventory, invSize);
+    }
+
+    if (tile == 'D' || tile == 'E') {
+        return false;
+    }
+    else if (tile == 'X') {
+        *reachedExit = true;
+    }
+
+    *pr = nr;
+    *pc = nc;
+
+    return true;
+}
+
+
 
 // test render
 void renderMap(char** map, int h, int w){
