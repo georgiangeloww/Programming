@@ -42,6 +42,7 @@ const int HP_CAP=20;
 char** createMap(int h, int w);
 void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
+bool isBounds(int r, int c, int h, int w);
 
 
 int main(){
@@ -50,6 +51,7 @@ int main(){
     int w;
     cin >> h;
     cin >> w;
+
    
 
     char** map = createMap(h, w);
@@ -73,14 +75,12 @@ char** createMap(int h, int w){
 
     for (int i = 0; i < h; i++){
         map[i] = new char [w];
-
-        for(int j = 0; j < w; j++){
-            map[i][j] = '.';
-        }
     }
+
     return map;
 }
 
+// test render
 void renderMap(char** map, int h, int w){
     for(int i = 0; i < h; i++){
         for(int j = 0; j < w; j++){
@@ -101,3 +101,11 @@ void destroyMap(char** map, int h){
     }
     map = nullptr;
 }
+
+bool isBounds(int r, int c, int h, int w){
+    if (r >= 0 && r < h && c >= 0 && c < w){
+        return true;
+    }
+    return false;
+}
+
