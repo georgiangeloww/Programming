@@ -17,6 +17,7 @@ bool isBounds(int r, int c, int h, int w);
 bool isWalkable(char ch);
 void fillRooms(char** map, int h, int w);
 void randomEmptyCell(char** map, int h, int w, int* rr, int* cc);
+void placeRandom(char** map, int h, int w, char ch);
 
 void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
@@ -33,6 +34,15 @@ int main(){
 
     char** map = createMap(h, w);
     fillRooms(map, h, w);
+
+    placeRandom(map, h, w, 'P');
+    placeRandom(map, h, w, 'D');
+    placeRandom(map, h, w, 'E');
+    placeRandom(map, h, w, 'C');
+    placeRandom(map, h, w, 'S');
+    placeRandom(map, h, w, 'K');
+    placeRandom(map, h, w, 'X');
+
     renderMap(map, h, w);
     
     destroyMap(map, h);
@@ -89,6 +99,11 @@ void randomEmptyCell(char** map, int h, int w, int* rr, int* cc){
     *cc = c;
 }
 
+void placeRandom(char** map, int h, int w, char ch){
+    int r, c;
+    randomEmptyCell(map, h, w, &r, &c);
+    map[r][c] = ch;
+}
 
 
 // test render
