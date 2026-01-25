@@ -31,6 +31,8 @@ bool movePlayer(char** map, int h, int w,
                 int* php, int patk, int* buffHits,
                 bool* reachedExit);
 
+void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize);
+
 void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
 
@@ -104,10 +106,10 @@ int main(){
         &buffHits,
         &reachedExit)) moves++; 
 
-    if (reachedExit) {
-        cout << "YOU WIN!" << endl;
-        running = false;
-    }
+    // if (reachedExit) {
+    //     cout << "YOU WIN!" << endl;
+    //     running = false;
+    // }
 
 
     renderMap(map, h, w);
@@ -249,6 +251,19 @@ bool movePlayer(
     *pc = nc;
 
     return true;
+}
+
+void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize){
+    if(*invSize >= MAX_INV)
+        return;
+
+    char tile = map[r][c];
+
+    if(tile == 'C' || tile == 'S' || tile == 'K'){
+        inventory[*invSize] = tile;
+        (*invSize)++;
+        map[r][c] = '.';
+    }
 }
 
 
