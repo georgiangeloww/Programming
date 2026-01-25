@@ -106,6 +106,5 @@ bool isBounds(int r, int c, int h, int w){
     if (r >= 0 && r < h && c >= 0 && c < w){
         return true;
     }
-    return false;
 }
 
