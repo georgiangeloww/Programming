@@ -33,8 +33,9 @@ bool movePlayer(char** map, int h, int w,
 
 void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize, int* php, int* buffHits);
 void useItem(char* inventory, int* invSize, int slot, int* php, int* buffHits);
+bool hasKey(const char* inventory, int invSize);
+int enemyAt(int r, int c, int* enemiesR, int* enemiesC, bool* enemiesAlive, int n);
 
-void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
 
 
@@ -51,7 +52,8 @@ int main(){
     int atkp = ATK;
     int buffHits = 0;
     int moves = 0;
-    char cmd = readInput();
+    char cmd;
+
 
     char inventory[MAX_INV];
     int invSize = 0;
@@ -73,15 +75,13 @@ int main(){
 
 
     while (running){
+        
         render(map, h, w,
             pr, pc, HP, atkp, buffHits, moves,
             inventory, invSize, enemiesAlive);
-
+            
+        char cmd = readInput();
         
-        
-        int nr = pr;
-        int nc = pc;
-
         if(cmd == 'Q') break;
 
         else if(cmd == 'U'){
@@ -91,13 +91,14 @@ int main(){
             useItem(inventory, &invSize, slot, &HP, &buffHits);
         }
 
+
          else if(cmd == 'W' || cmd == 'A' || cmd == 'S' || cmd == 'D'){
             if(movePlayer(map, h, w, &pr, &pc, cmd, inventory, &invSize, &HP, atkp, &buffHits, &reachedExit))
                 moves++;
         }
 
 
-       if(reachedExit && hasKey(inventory, invSize)){
+        if(reachedExit && hasKey(inventory, invSize)){
             cout << "YOU WIN!\n";
             running = false;
         }
@@ -106,11 +107,6 @@ int main(){
         running = false;
         }
 
-        if (inBounds(nr, nc, h, w) && isWalkable(map[nr][nc])){
-            pr = nr;
-            pc = nc;
-            moves++;
-        }
     }
 
 
@@ -124,7 +120,6 @@ int main(){
 
 
 
-    renderMap(map, h, w);
     destroyMap(map, h);
 
     // D: HP7/ATK2; E: HP10/ATK3;
@@ -249,7 +244,7 @@ bool movePlayer(
 
 
     if (tile == 'C' || tile == 'S' || tile == 'K') {
-        tryPickupItem(map, nr, nc, inventory, invSize);
+        tryPickupItem(map, nr, nc, inventory, invSize, php, buffHits);
     }
 
     if (tile == 'D' || tile == 'E') {
@@ -265,30 +260,21 @@ bool movePlayer(
     return true;
 }
 
-void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize, int* php, int* buffHits){
+void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize){
     char tile = map[r][c];
 
-    if(tile == 'C'){
-        *php += 5;
-        if(*php > HP_CAP) *php = HP_CAP;
-        map[r][c] = '.';
-    }
-    else if(tile == 'S'){
-        *buffHits = 3;
-        map[r][c] = '.';
-    }
-    else if(tile == 'K'){
+    if(tile == 'C' || tile == 'S' || tile == 'K'){
         if(*invSize < MAX_INV){
-            inventory[*invSize] = 'K';
+            inventory[*invSize] = tile;
             (*invSize)++;
             map[r][c] = '.';
         }
     }
 }
 
+
 void useItem(char* inventory, int* invSize, int slot, int* php, int* buffHits){
-    if(slot < 0 || slot >= *invSize)
-        return;
+    if(slot < 0 || slot >= *invSize) return;
 
     char item = inventory[slot];
 
@@ -307,18 +293,23 @@ void useItem(char* inventory, int* invSize, int slot, int* php, int* buffHits){
 }
 
 
-
-
-
-// test render
-void renderMap(char** map, int h, int w){
-    for(int i = 0; i < h; i++){
-        for(int j = 0; j < w; j++){
-            cout << map[i][j];
-        }
-        cout << endl;
-    }
+bool hasKey(const char* inventory, int invSize){
+    for(int i = 0; i < invSize; i++)
+        if(inventory[i] == 'K')
+            return true;
+    return false;
 }
+
+int enemyAt(int r, int c, int* enemiesR, int* enemiesC, bool* enemiesAlive, int n) {
+    for(int i = 0; i < n; i++){
+        if(enemiesAlive[i] && enemiesR[i] == r && enemiesC[i] == c)
+            return i;
+    }
+    return -1;
+}
+
+
+
 
 void destroyMap(char** map, int h){
         if(map != nullptr){
