@@ -13,7 +13,7 @@ const int HP_CAP=20;
 
 
 char** createMap(int h, int w);
-bool isBounds(int r, int c, int h, int w);
+bool inBounds(int r, int c, int h, int w);
 bool isWalkable(char ch);
 void fillRooms(char** map, int h, int w);
 void randomEmptyCell(char** map, int h, int w, int* rr, int* cc);
@@ -68,7 +68,7 @@ char** createMap(int h, int w){
     return map;
 }
 
-bool isBounds(int r, int c, int h, int w){
+bool inBounds(int r, int c, int h, int w){
     return r >= 0 && r < h && c >= 0 && c < w;
 }
 
