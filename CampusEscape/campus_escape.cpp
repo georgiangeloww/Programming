@@ -1,31 +1,4 @@
 
-/*
-
-
-Етап 1(Карта и рендер) -
-4) Данни и константи (пример)
-H=20, W=35; MAX_INV=6; MAX_ENEMIES=8 (използвани ~6); HP старт=14, ATK=3, BuffHits=0; D: HP7/ATK2; E: HP10/ATK3; HP_CAP=20.
-
-3.7 Рендер/статус
-Показвайте карта и статус лента: HP/MAX, ATK, BuffHits, Moves, EnemiesAlive, Items[..].
-
-Рендер и вход:
-void render(char** map, int h, int w,
-           int pr, int pc, int php, int patk, int buffHits, int moves,
-           const char* inv, int invSize, int enemiesAlive);
-char readInput();
-
-
-5) Задължителни функции (API договор)
-Карта и помощни:
-char** createMap(int h, int w);
-void   destroyMap(char** m, int h);
-bool   inBounds(int r, int c, int h, int w);
-bool   isWalkable(char ch);
-
-
-*/
-
 #include <iostream>
 using std::cout;
 using std::cin;
@@ -40,11 +13,13 @@ const int HP_CAP=20;
 
 
 char** createMap(int h, int w);
-void renderMap(char** map, int h, int w);
-void destroyMap(char** map, int h);
 bool isBounds(int r, int c, int h, int w);
 bool isWalkable(char ch);
 void fillRooms(char** map, int h, int w);
+void randomEmptyCell(char** map, int h, int w, int* rr, int* cc);
+
+void renderMap(char** map, int h, int w);
+void destroyMap(char** map, int h);
 
 
 int main(){
@@ -57,10 +32,11 @@ int main(){
    
 
     char** map = createMap(h, w);
+    fillRooms(map, h, w);
     renderMap(map, h, w);
+    
     destroyMap(map, h);
-
-
+    
    
     int HP = 14; 
     int BuffHits = 0; 
@@ -82,6 +58,39 @@ char** createMap(int h, int w){
     return map;
 }
 
+bool isBounds(int r, int c, int h, int w){
+    return r >= 0 && r < h && c >= 0 && c < w;
+}
+
+bool isWalkable(char ch){
+    return ch == '.' || ch == 'D' || ch == 'E' || ch == 'C' || ch == 'S' || ch == 'K' || ch == 'X';
+}
+
+void fillRooms(char** map, int h, int w){
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+        {
+            if (i == 0 || i == h - 1 || j == 0 || j == w - 1)
+                map[i][j] = '#';
+            else
+                map[i][j] = '.';
+        }
+    }
+}
+
+void randomEmptyCell(char** map, int h, int w, int* rr, int* cc){
+    int r, c;
+    do {
+        r = rand() % h;
+        c = rand() % w;
+    } while (map[r][c] != '.');
+    *rr = r;
+    *cc = c;
+}
+
+
+
 // test render
 void renderMap(char** map, int h, int w){
     for(int i = 0; i < h; i++){
@@ -92,35 +101,13 @@ void renderMap(char** map, int h, int w){
     }
 }
 
-
 void destroyMap(char** map, int h){
         if(map != nullptr){
-        for(int i = 0; i < h; h++){
+        for(int i = 0; i < h; i++){
             delete[] map[i];
             map[i] = nullptr;   
         }
         delete[] map;
     }
     map = nullptr;
-}
-
-bool isBounds(int r, int c, int h, int w){
-    return r >= 0 && r < h && c >= 0 && c < w;
-}
-
-bool isWalkable(char ch){
-    return ch == '.' || ch == 'D' || ch == 'E' || ch == 'C' || ch == 'S' || ch == 'K' || ch == 'X';
-}
-
-void fillRooms(char** map, int h, int w){
-    for (int y = 0; y < h; y++)
-    {
-        for (int x = 0; x < w; x++)
-        {
-            if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
-                map[y][x] = '#';
-            else
-                map[y][x] = '.';
-        }
-    }
 }
