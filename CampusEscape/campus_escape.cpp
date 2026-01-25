@@ -44,6 +44,7 @@ void renderMap(char** map, int h, int w);
 void destroyMap(char** map, int h);
 bool isBounds(int r, int c, int h, int w);
 bool isWalkable(char ch);
+void fillRooms(char** map, int h, int w);
 
 
 int main(){
@@ -109,4 +110,17 @@ bool isBounds(int r, int c, int h, int w){
 
 bool isWalkable(char ch){
     return ch == '.' || ch == 'D' || ch == 'E' || ch == 'C' || ch == 'S' || ch == 'K' || ch == 'X';
+}
+
+void fillRooms(char** map, int h, int w){
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
+            if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                map[y][x] = '#';
+            else
+                map[y][x] = '.';
+        }
+    }
 }
