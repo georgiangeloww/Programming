@@ -21,23 +21,26 @@ int main(){
     int n;
     cout << "How many orders do you have: " << endl;
     cin >> n;
-    Coffee** drinkArr = new Coffee* [n];
+    Coffee* drinkArr = new Coffee[n];   
+    
     for(int i = 0; i < n; i++){
-        drinkArr[i] = new Coffee;
+        drinkArr[i].input();
     }
-    
-    
 
     for(int i = 0; i < n; i++){
-        cout << "The final price for order number " << i + 1 << "is: " << endl;
-        cout << drinkArr[i]->pricePerDrink();
+        cout << "The final price for order number " << i + 1 << " is: ";
+        cout << drinkArr[i].pricePerDrink() << endl;
     }
+
+    int big_price_ind = 0;
+    for(int i = 1; i < n; i++){
+        if(drinkArr[i].pricePerDrink() > drinkArr[big_price_ind].pricePerDrink()){
+            big_price_ind = i;
+        }
+    }
+    cout << "The most expensive order is with " << drinkArr[big_price_ind].name << " for a drink!";
 
     if(drinkArr != nullptr){
-        for(int i = 0; i < n; i++){
-            delete[] drinkArr[i];
-            drinkArr[i] = nullptr;
-        }
         delete[] drinkArr;
         drinkArr = nullptr;
     }
@@ -57,6 +60,8 @@ void Coffee::input(){
 
     cout << "The price for a cup is: " << endl;
     cin >> price;
+
+    cout << endl;
 }
 
 double Coffee::pricePerDrink(){
