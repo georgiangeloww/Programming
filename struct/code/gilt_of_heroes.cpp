@@ -37,9 +37,14 @@ int main(){
         heroesArr[i]->input();
     }
 
-    for(int i = 0; i < n; i++){
-        heroesArr[i]->output();
+    int rich_ind = 0;
+    for(int i = 1; i < n; i++){
+        if(heroesArr[i]->gold > heroesArr[rich_ind]->gold){
+            rich_ind = i;
+        }
     }
+    cout << "The richest hero is: " << endl;
+    heroesArr[rich_ind]->output();
 
 
 
