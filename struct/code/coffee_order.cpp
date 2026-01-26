@@ -25,9 +25,13 @@ int main(){
     for(int i = 0; i < n; i++){
         drinkArr[i] = new Coffee;
     }
-
+    
     
 
+    for(int i = 0; i < n; i++){
+        cout << "The final price for order number " << i + 1 << "is: " << endl;
+        cout << drinkArr[i]->pricePerDrink();
+    }
 
     if(drinkArr != nullptr){
         for(int i = 0; i < n; i++){
