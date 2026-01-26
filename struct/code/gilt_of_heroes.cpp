@@ -47,6 +47,22 @@ int main(){
     heroesArr[rich_ind]->output();
 
 
+    int temp;
+    for(int i = 0; i < n; i++){
+        for(int j = i + 1; j < n; j++){
+            if(heroesArr[i]->level > heroesArr[j]->level){
+                temp = heroesArr[i]->level;
+                heroesArr[i]->level = heroesArr[j]->level;
+                heroesArr[j]->level = temp;
+
+            }
+        }
+    }
+
+    for(int i = 0; i < n; i++){
+        cout << "Place "<< i + 1 << " is for: " << heroesArr[i]->name << " with level " << heroesArr[i]->level << endl;
+    }
+
 
     return 0;
 }
@@ -71,6 +87,7 @@ void Hero::input(){
 
     cout << "Enter the gold quantity the hero has: ";
     cin >> gold;
+    cout << endl;
 }
 
 
