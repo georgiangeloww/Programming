@@ -26,6 +26,22 @@ struct Hero{
 
 
 int main(){
+    int n;
+    cin >> n;
+    Hero** heroesArr = new Hero*[n];
+    for(int i = 0; i < n; i++){
+        heroesArr[i] = new Hero;
+    }
+
+    for(int i = 0; i < n; i++){
+        heroesArr[i]->input();
+    }
+
+    for(int i = 0; i < n; i++){
+        heroesArr[i]->output();
+    }
+
+
 
     return 0;
 }
@@ -55,7 +71,7 @@ void Hero::input(){
 
 
 void Hero::output(){
-    cout << "Name: " << name;
+    cout << "Name: " << name << endl;
 
     cout << "The type of the hero: ";
 
@@ -66,7 +82,11 @@ void Hero::output(){
         case 3: cout << DRAGON; break;
         default: cout << "No such hero!";
     }
+    cout << endl;
 
-    cout << "The level of the hero: ";
+    cout << "The level of the hero is: ";
+    cout << level << endl;
 
+    cout << "The gold of the hero is: ";
+    cout << gold << endl;
 }
