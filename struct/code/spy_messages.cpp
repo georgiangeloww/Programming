@@ -24,6 +24,14 @@ int main(){
     }
 
 
+    for(int i = 0; i < n; i++){
+        if(messagesArr[i].levelSec >= 4){
+            cout << "The message with security level bigger or equal to 4 is with:" << endl;
+            messagesArr[i].output();
+        }
+    }
+
+
     if(messagesArr != nullptr){
         delete[] messagesArr;
         messagesArr = nullptr;
