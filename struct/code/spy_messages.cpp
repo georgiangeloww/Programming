@@ -32,6 +32,16 @@ int main(){
     }
 
 
+    int biggest_txt_i = 0;
+    for(int i = 0; i < n; i++){
+        if(messagesArr[i].text.length() > messagesArr[biggest_txt_i].text.length()){
+            biggest_txt_i = i;
+        }
+    }
+    cout << "The biggest text messege is: " << endl;
+    cout << messagesArr[biggest_txt_i].text;
+    
+
     if(messagesArr != nullptr){
         delete[] messagesArr;
         messagesArr = nullptr;
