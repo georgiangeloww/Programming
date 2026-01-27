@@ -27,3 +27,13 @@ int main(){
     return 0;
 }
 
+void Message::input(){
+    cout << "Enter the name of the message: ";
+    cin >> name;
+
+    cout << "Enter the message: ";
+    std::getline(cin >> std::ws, text);
+
+    cout << "Enter the secturity level of the message: ";
+    cin >> levelSec;
+}
