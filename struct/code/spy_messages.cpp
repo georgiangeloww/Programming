@@ -15,7 +15,15 @@ struct Message{
 };
 
 int main(){
+    int n;
+    cin >> n;
+    Message* messagesArr = new Message[n];
 
+        
+    if(messagesArr != nullptr){
+        delete[] messagesArr;
+        messagesArr = nullptr;
+    }
     return 0;
 }
 
