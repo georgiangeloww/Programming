@@ -19,7 +19,11 @@ int main(){
     cin >> n;
     Message* messagesArr = new Message[n];
 
-        
+    for(int i = 0; i < n; i++){
+        messagesArr[i].input();
+    }
+
+
     if(messagesArr != nullptr){
         delete[] messagesArr;
         messagesArr = nullptr;
@@ -36,4 +40,16 @@ void Message::input(){
 
     cout << "Enter the secturity level of the message: ";
     cin >> levelSec;
+}
+
+
+void Message::output(){
+    cout << "The name of the message: " << endl;
+    cout << name << endl;
+
+    cout << "The message is: " << endl;
+    cout << text << endl;
+
+    cout << "The secturity level of the message: " << endl;
+    cout << levelSec << endl;
 }
