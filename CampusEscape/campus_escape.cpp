@@ -9,7 +9,7 @@ using std::endl;
 // const int H=20;
 // const int W=35;
 const int MAX_INV = 6;
-const int MAX_ENEMIES = 8; //(използвани ~6);
+const int MAX_ENEMIES = 8;
 const int ATK = 3;
 const int HP_CAP = 20;
 
@@ -31,10 +31,15 @@ bool movePlayer(char** map, int h, int w,
                 int* php, int patk, int* buffHits,
                 bool* reachedExit);
 
-void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize, int* php, int* buffHits);
+void tryPickupItem(char** map, int r, int c, char* inventory, int* invSize);
 void useItem(char* inventory, int* invSize, int slot, int* php, int* buffHits);
 bool hasKey(const char* inventory, int invSize);
 int enemyAt(int r, int c, int* enemiesR, int* enemiesC, bool* enemiesAlive, int n);
+void resolveCombat(int* php, int patk, int* buffHits, int* ehp, int eatk);
+void moveEnemies(char** map, int h, int w, int pr, int pc,
+                 int* enemiesR, int* enemiesC, int* enemiesHP, int* enemiesATK,
+                 bool* enemiesAlive, int enemyCount,
+                 int* php, int patk, int* buffHits);
 
 void destroyMap(char** map, int h);
 
@@ -47,7 +52,7 @@ int main(){
 
     srand(time(nullptr));
 
-    int pr = 1, pc = 1; // позиция на играча
+    int pr = 1, pc = 1;
     int HP = 14;
     int atkp = ATK;
     int buffHits = 0;
@@ -57,7 +62,7 @@ int main(){
 
     char inventory[MAX_INV];
     int invSize = 0;
-    int enemiesAlive = 3;
+    bool enemiesAlive[MAX_ENEMIES];
 
     bool running = true;
     bool reachedExit = false;
@@ -65,7 +70,6 @@ int main(){
     char** map = createMap(h, w);
     fillRooms(map, h, w);
 
-    // placeRandom(map, h, w, 'P');
     placeRandom(map, h, w, 'D');
     placeRandom(map, h, w, 'E');
     placeRandom(map, h, w, 'C');
@@ -73,14 +77,41 @@ int main(){
     placeRandom(map, h, w, 'K');
     placeRandom(map, h, w, 'X');
 
+    int enemiesR[MAX_ENEMIES];
+    int enemiesC[MAX_ENEMIES];
+    int enemiesHP[MAX_ENEMIES];
+    int enemiesATK[MAX_ENEMIES];
+    bool enemiesAlive[MAX_ENEMIES];
+    int enemyCount = 2;
+
+    enemiesHP[0] = 7; enemiesATK[0] = 2; enemiesAlive[0] = true;
+    enemiesHP[1] = 10; enemiesATK[1] = 3; enemiesAlive[1] = true;
+
+
+     for(int i = 0; i < enemyCount; i++){
+        for(int r = 0; r < h; r++){
+            for(int c = 0; c < w; c++){
+                if((i==0 && map[r][c]=='D') || (i==1 && map[r][c]=='E')){
+                    enemiesR[i] = r;
+                    enemiesC[i] = c;
+                    map[r][c] = '.';
+                }
+            }
+        }
+    }
 
     while (running){
         
-        render(map, h, w,
-            pr, pc, HP, atkp, buffHits, moves,
-            inventory, invSize, enemiesAlive);
+        int aliveCount = 0;
+        for(int i = 0; i < enemyCount; i++){
+            if(enemiesAlive[i]) 
+            aliveCount++;
+        }
+
+        render(map, h, w, pr, pc, HP, atkp, buffHits, moves, inventory, invSize, aliveCount);
+
             
-        char cmd = readInput();
+        cmd = readInput();
         
         if(cmd == 'Q') break;
 
@@ -96,7 +127,13 @@ int main(){
             if(movePlayer(map, h, w, &pr, &pc, cmd, inventory, &invSize, &HP, atkp, &buffHits, &reachedExit))
                 moves++;
         }
+        
 
+
+        moveEnemies(map, h, w, pr, pc,
+                    enemiesR, enemiesC, enemiesHP, enemiesATK,
+                    enemiesAlive, enemyCount,
+                    &HP, atkp, &buffHits);
 
         if(reachedExit && hasKey(inventory, invSize)){
             cout << "YOU WIN!\n";
@@ -110,20 +147,8 @@ int main(){
     }
 
 
-    if (movePlayer(
-        map, h, w,
-        &pr, &pc, cmd,
-        inventory, &invSize,
-        &HP, atkp,
-        &buffHits,
-        &reachedExit)) moves++; 
-
-
 
     destroyMap(map, h);
-
-    // D: HP7/ATK2; E: HP10/ATK3;
-    // дали да не ги разменя enemiesAlive, Items[..]
 
 
     return 0;
@@ -244,8 +269,9 @@ bool movePlayer(
 
 
     if (tile == 'C' || tile == 'S' || tile == 'K') {
-        tryPickupItem(map, nr, nc, inventory, invSize, php, buffHits);
+    tryPickupItem(map, nr, nc, inventory, invSize);
     }
+
 
     if (tile == 'D' || tile == 'E') {
         return false;
@@ -308,7 +334,63 @@ int enemyAt(int r, int c, int* enemiesR, int* enemiesC, bool* enemiesAlive, int 
     return -1;
 }
 
+void resolveCombat(int* php, int patk, int* buffHits, int* ehp, int eatk) {
+    int currentATK = patk;
+    if(*buffHits > 0){
+        currentATK += 2;
+        (*buffHits)--;
+    }
 
+    *ehp -= currentATK;
+    if(*ehp <= 0) return;
+
+    *php -= eatk;
+}
+
+void moveEnemies(char** map, int h, int w, int pr, int pc,
+                 int* enemiesR, int* enemiesC, int* enemiesHP, int* enemiesATK,
+                 bool* enemiesAlive, int enemyCount,
+                 int* php, int patk, int* buffHits) {
+
+    for(int i = 0; i < enemyCount; i++){
+        if(!enemiesAlive[i]) continue;
+
+        int er = enemiesR[i];
+        int ec = enemiesC[i];
+
+        int dr = pr - er;
+        int dc = pc - ec;
+
+        int nr = er;
+        int nc = ec;
+
+        if(abs(dr) + abs(dc) <= 5){
+            if(abs(dr) > abs(dc)) nr += (dr > 0 ? 1 : -1);
+            else nc += (dc > 0 ? 1 : -1);
+        } else {
+            int dir = rand() % 4;
+            switch(dir){
+                case 0: nr = er-1; break;
+                case 1: nr = er+1; break;
+                case 2: nc = ec-1; break;
+                case 3: nc = ec+1; break;
+            }
+        }
+
+        if(!inBounds(nr, nc, h, w)) { nr = er; nc = ec; }
+        else if(map[nr][nc] == '#') { nr = er; nc = ec; }
+        else if(enemyAt(nr, nc, enemiesR, enemiesC, enemiesAlive, enemyCount) != -1) { nr = er; nc = ec; }
+
+        if(nr == pr && nc == pc){
+            resolveCombat(php, patk, buffHits, &enemiesHP[i], enemiesATK[i]);
+            if(enemiesHP[i] <= 0) enemiesAlive[i] = false;
+            continue;
+        }
+
+        enemiesR[i] = nr;
+        enemiesC[i] = nc;
+    }
+}
 
 
 void destroyMap(char** map, int h){
