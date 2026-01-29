@@ -34,6 +34,14 @@ int main(){
         }
     }
 
+        int b_sec_d = 0;
+    for(int i = 1; i < n; i++){
+        for(int j = n - 1; j > n - i - 1; j--){
+            b_sec_d += arr[i][j];
+        }
+    }
+
+
 
 
 
