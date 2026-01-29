@@ -41,7 +41,15 @@ int main(){
         }
     }
 
+    
 
+
+    cout << "Sum of the secondary diagonal:" << endl;
+    cout << sum_sec_d << endl;
+    cout << "Sum above the secondary diagonal: " << endl;
+    cout << a_sec_d << endl;
+    cout << "Sum below the secondary diagonal: " << endl;
+    cout << b_sec_d << endl;
 
 
 
