@@ -6,11 +6,13 @@
 
 int main(){
     int n, m;
+    std::cin >> n; 
+    std::cin >> m; 
 
     int** rand_arr = new int* [n];
 
-    for(int j = 0; j < m; j++){
-        rand_arr[j] = new int [m];
+    for(int i = 0; i < n; i++){
+        rand_arr[i] = new int [m];
     }
 
     srand((unsigned int)time(0));
@@ -28,7 +30,7 @@ int main(){
     if(rand_arr != nullptr){
         for(int j = 0; j < m; j++){
             delete[] rand_arr[j];
-            rand_arr = nullptr;
+            rand_arr[j] = nullptr;
         }
         delete[] rand_arr;
         rand_arr = nullptr;
