@@ -32,7 +32,7 @@ int main(){
     cin >> option;
 
 
-    char txt[] = {"This is the best 28 Party 115!"};
+    char txt[] = {"This is the best 288 Party 115!"};
     cout << "Text:" << endl;
     cout << txt << endl;
 
@@ -108,6 +108,20 @@ int main(){
                 sum += num;
             }
             cout << sum << endl;
+        }break;
+        case FIND_MAX:{
+            int max_num = 0;
+            for(int i = 0; txt[i] != '\0'; i++){
+                int num = 0;
+                while (txt[i] >= '0' && txt[i] <= '9' && txt[i] != '\0'){
+                    num = num * 10 + (txt[i] - '0');
+                    i++;
+                }
+                if(num > max_num){
+                    max_num = num;
+                }
+            }
+            cout << max_num << endl;
         }break;
         default: std::cout << "Invalid input";
     }
