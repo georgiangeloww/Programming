@@ -11,7 +11,7 @@ enum MenuOption{
     LOWERCASE,
     UPPERCASE,
     COUNTDIGITS,
-    DIGITSTOCHAR
+    SUM_DIG
 };
 
 int main(){
@@ -21,13 +21,15 @@ int main(){
     cout << "2 -> Make the whole text lowercase" << endl;
     cout << "3 -> Make the whole text uppercase" << endl;
     cout << "4 -> Count the digits in text" << endl;
-    cout << " -> Convert symbol in digit" << endl; 
+    cout << "5 -> Find the sum of the digits in text" << endl; 
 
     cout << "Choose option from the given ones:" << endl;
     int option;
     cin >> option;
 
+
     char txt[] = {"This is the best Party 115!"};
+    cout << "Text:" << endl;
     cout << txt << endl;
 
 
@@ -80,7 +82,17 @@ int main(){
             }
             cout << cnt << endl;
         }break;
-        case DIGITSTOCHAR:
+        case SUM_DIG:{
+            char* ptr = txt;
+            int sum = 0;
+            while(*ptr != '\0'){
+                if(*ptr >= '0' && *ptr <= '9'){
+                    sum += *ptr - '0';
+                }
+                ptr++;
+            }
+            cout << sum << endl;
+        }break;
         default: std::cout << "Invalid input";
     }
 
