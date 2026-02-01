@@ -11,7 +11,9 @@ enum MenuOption{
     LOWERCASE,
     UPPERCASE,
     COUNTDIGITS,
-    SUM_DIG
+    SUM_DIG,
+    SUM_NUMBERS,
+    FIND_MAX
 };
 
 int main(){
@@ -22,13 +24,15 @@ int main(){
     cout << "3 -> Make the whole text uppercase" << endl;
     cout << "4 -> Count the digits in text" << endl;
     cout << "5 -> Find the sum of the digits in text" << endl; 
+    cout << "6 -> Find the sum of the numbers in text" << endl;
+    cout << "7 -> Find the max number in text" << endl;
 
     cout << "Choose option from the given ones:" << endl;
     int option;
     cin >> option;
 
 
-    char txt[] = {"This is the best Party 115!"};
+    char txt[] = {"This is the best 28 Party 115!"};
     cout << "Text:" << endl;
     cout << txt << endl;
 
@@ -90,6 +94,18 @@ int main(){
                     sum += *ptr - '0';
                 }
                 ptr++;
+            }
+            cout << sum << endl;
+        }break;
+        case SUM_NUMBERS:{
+            int sum = 0;
+            for(int i = 0; txt[i] != '\0'; i++){
+                int num = 0;
+                while(txt[i] >= '0' && txt[i] <= '9' && txt[i] != '\0'){
+                    num = num * 10 + (txt[i] - '0');
+                    i++;
+                }
+                sum += num;
             }
             cout << sum << endl;
         }break;
