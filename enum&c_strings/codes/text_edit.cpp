@@ -7,6 +7,7 @@ using std::cout;
 
 enum MenuOption{
     PRINTASCII,
+    TOGGLECASE,
     CASESENSITIVE,
     COUNTDIGITS,
     DIGITSTOCHAR
@@ -15,23 +16,15 @@ enum MenuOption{
 int main(){
     cout << "Choose an option:" << endl;
     cout << "0 -> print ASCII code" << endl;
-    cout << "1 -> Convert lowercase into uppercase or upper into lower" << endl;
-    cout << "2 -> Count the digits in text" << endl;
-    cout << "3-> Convert symbol in digit" << endl; 
+    cout << "1 -> Make the uppercase to lowercase and vice versa" << endl;
+    cout << " -> Convert lowercase into uppercase or upper into lower" << endl;
+    cout << " -> Count the digits in text" << endl;
+    cout << " -> Convert symbol in digit" << endl; 
 
     int option;
     cin >> option;
 
-    
-
-
-    char text[100];
-
-
-    // std::cin.getline(text, 100);
-
-    
-
+    char txt[] = {"This is the best Party!"};
 
     switch(MenuOption (option)){
         case PRINTASCII: {
@@ -41,11 +34,21 @@ int main(){
                 cout << (char)ch << endl;
             }
         }break;
+        case TOGGLECASE: {
+            for (int i = 0; txt[i] != '\0'; i++) {
+                if(txt[i] >= 'A' && txt[i] <= 'Z'){
+                    txt[i] += ' '; 
+                }
+                else if(txt[i] >= 'a' && txt[i] <= 'z'){
+                    txt[i] -= ' ';
+                }
+                cout << txt[i];
+            }
+        }break;
         case CASESENSITIVE:{
-            // for(int i = 0; i < n; i++){
-
-            // }
-            // if(text[i])
+            for(int i = 0; txt[i] != '\0'; i++){
+                
+            }
         }break;
         case COUNTDIGITS:
         case DIGITSTOCHAR:
