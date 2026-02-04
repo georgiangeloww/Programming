@@ -34,10 +34,10 @@ int main(){
     cout << "The word " << s;
 
     if(isStrInArr(strings, s, n)){
-        cout << " is found!" << endl;
+        cout << " was found above or in the secondary diagoanal!" << endl;
     }
     else{
-        cout << " is NOT found!" << endl;
+        cout << " was NOT found above or in the secondary diagoanal!" << endl;
     }
 
 
@@ -61,8 +61,8 @@ int main(){
 }
 
 bool isStrInArr(char*** array, char* word, int n){
-    for(int i = 0; i < n - 1; i++){
-        for(int j = 0; j < n - 1 - i; j++){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n - i; j++){
             if(std::strcmp(word, array[i][j]) == 0){
                 return true;
             } 
