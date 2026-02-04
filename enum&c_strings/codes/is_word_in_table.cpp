@@ -20,6 +20,7 @@ int main(){
     cout << "Enter the size of the table nxn: ";
     cin >> n;
 
+    cout << "Input the elements in table: " << endl;
     char*** strings = new char** [n];
     for(int i = 0; i < n; i++){
         strings[i] = new char* [n];
@@ -30,7 +31,14 @@ int main(){
     }
 
 
+    cout << "The word " << s;
 
+    if(isStrInArr(strings, s, n)){
+        cout << " is found!" << endl;
+    }
+    else{
+        cout << " is NOT found!" << endl;
+    }
 
 
     if(strings != nullptr){
