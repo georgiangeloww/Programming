@@ -5,11 +5,13 @@
 using std::cin;
 using std::cout;
 
+const int MAX_S = 7; 
+
 bool isStrInArr(char*** array, char* word, int n);
 
 int main(){
 
-    char* s = new char[7];
+    char* s = new char[MAX_S];
     
     cout << "Enter the searched word: ";
     cin >> s;
@@ -20,8 +22,10 @@ int main(){
 
     char*** strings = new char** [n];
     for(int i = 0; i < n; i++){
+        strings[i] = new char* [n];
         for(int j = 0; j < n; j++){
-            
+            strings[i][j] = new char[MAX_S];
+            cin >> strings[i][j];
         }
     }
 
@@ -29,6 +33,18 @@ int main(){
 
 
 
+    if(strings != nullptr){
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                delete[] strings[i][j];
+                strings[i][j] = nullptr;
+            }
+            delete[] strings[i];
+            strings[i] = nullptr;
+        }
+        delete[] strings;
+        strings = nullptr;
+    }
 
     if(s != nullptr){
         delete[] s;
