@@ -1,5 +1,5 @@
 #include <iostream>
-// #include <cstring>
+#include <cstring>
 #define endl '\n'
 using std::cin;
 using std::cout;
@@ -45,7 +45,7 @@ int main(){
 bool isSymetric(char*** strArr, int n){
     for(int i = 0; i < n - 1; i++){
         for(int j = i + 1; j < n; j++){
-            if(std::strcmp(strArr[i][j], strArr[j][i])){
+            if(std::strcmp(strArr[i][j], strArr[j][i]) != 0){
                 return false;
             }
         }
