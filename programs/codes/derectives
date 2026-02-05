@@ -1,0 +1,86 @@
+/*
+directives:
+
+#include - include files
+This directive inserts the contents of another file (for example, a library) into the current file before compilation starts.
+
+#define - define macros
+This creates a macro, which is a name that gets replaced with a piece of text or value before compilation.
+
+#undef - undefined a macro 
+Removes a previously defined macro
+
+----------------------------------------------------------------------------------------
+
+A.conditional compilation -
+These allow you to compile certain parts of your code only if certain conditions are met.
+#if 
+#ifdef
+#ifndef
+#else
+#elif
+#elifdef
+#elifndef 
+#endif
+
+example with ifdef:
+#define DEBUG
+
+#ifdef DEBUG
+    std::cout << "Debug mode on" << std::endl;
+#endif
+
+The code inside will only compile if DEBUG is defined.
+{
+Example with #if and #else:
+#define VERSION 2
+
+#if VERSION == 1
+    std::cout << "Old version" << std::endl;
+#else
+    std::cout << "New version" << std::endl;
+#endif
+}
+---------------------------------------------------------------------------------------------
+#pragma -
+These are special commands that depend on the compiler.
+
+Examples:
+#pragma once
+
+
+➡️ Tells the compiler to include a header only once (an alternative to include guards).
+
+
+B.Include Guards
+Not a separate directive, but a common pattern to prevent multiple inclusions of a header
+
+{
+#ifndef MYHEADER_H
+#define MYHEADER_H
+
+// contents of .h file
+
+#endif
+}
+
+#error
+Stops compilation with a custom error (e.g. #error Wrong version)
+
+🧠 Example:
+#include <iostream>
+
+{
+int main() 
+{
+    std::cout << "Start" << std::endl;
+
+#line 100 "custom_file.cpp"
+    std::cout << "Hello" << std::endl;  // If there's an error here...
+
+    return 0;
+}
+}
+
+
+*/
