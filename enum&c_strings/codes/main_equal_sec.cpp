@@ -31,7 +31,12 @@ int main(){
     cout << finalResSec << endl;
 
 
-
+    if(std::strcmp(finalResMain, finalResSec) == 0){
+        cout << "The diagonals of the table are equal!" << endl;
+    }
+    else{
+        cout << "The digonals of the tabel are NOT equal!" << endl;
+    }
 
 
     if(stringsTableArr != nullptr){
@@ -72,7 +77,7 @@ char* concatenateStrSec(char*** word, int n){
     size_t maxLenght = 0;
 
     for(int i = 0; i < n; i++){
-        for(int j = n - 1; j >= n - i - 1; j--){
+        for(int j = n - i - 1; j >= n - i - 1; j--){
             maxLenght += std::strlen(word[i][j]);
         }
     }
@@ -81,7 +86,7 @@ char* concatenateStrSec(char*** word, int n){
     resArrSec[0] = '\0';
 
     for(int i = 0; i < n; i++){
-        for(int j = n - 1; j >= n - i - 1; j--){
+        for(int j = n - i - 1; j >= n - i - 1; j--){
             std::strcat(resArrSec, word[i][j]);
         }
     }
