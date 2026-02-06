@@ -10,7 +10,32 @@ const int MAX_W = 7;
 int main(){
     int n;
     cin >> n;
+    
+    char*** stringsTableArr = new char** [n];
+    for(int i = 0; i < n; i++){
+        stringsTableArr[i] = new char* [n];
+        for(int j = 0; j < n; j++){
+            stringsTableArr[i][j] = new char [n];
+        }
+    } 
 
+    
+
+
+
+
+    if(stringsTableArr != nullptr){
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                delete[] stringsTableArr[i][j];
+                stringsTableArr[i][j]  = nullptr;
+            }
+            delete[] stringsTableArr[i];
+            stringsTableArr[i] = nullptr;
+        }
+        delete[] stringsTableArr;
+        stringsTableArr = nullptr;
+    }
 
     return 0;
 }
