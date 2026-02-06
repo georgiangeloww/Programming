@@ -3,7 +3,8 @@
 using std::cin;
 using std::cout;
 
-char* concatenateStr(char*** word, int n);
+char* concatenateStrMain(char*** word, int n);
+char* concatenateStrSec(char*** word, int n);
 
 const int MAX_W = 7;
 
@@ -16,10 +17,19 @@ int main(){
         stringsTableArr[i] = new char* [n];
         for(int j = 0; j < n; j++){
             stringsTableArr[i][j] = new char [n];
+            cin >> stringsTableArr[i][j];
         }
-    } 
+    }
 
-    
+    char* finalResMain = concatenateStrMain(stringsTableArr, n);
+    char* finalResSec = concatenateStrSec(stringsTableArr, n);
+
+    cout << "Concatenate sentance: " << endl;
+    cout << finalResMain << endl;
+
+    cout << "Concatenate sentance: " << endl;
+    cout << finalResSec << endl;
+
 
 
 
@@ -40,17 +50,42 @@ int main(){
     return 0;
 }
 
-char* concatenateStr(char*** word, int n){
-    int max_lenght = n * n * MAX_W;
-
-    char* resArrMain = new char [max_lenght];
-
-    resArrMain = {'\0'};
+char* concatenateStrMain(char*** word, int n){
+    size_t maxLenght = 0;
 
     for(int i = 0; i < n; i++){
-        std::strcat(word[i][i], resArrMain);
+        maxLenght += std::strlen(word[i][i]);
+    }
+
+    char* resArrMain = new char [maxLenght + 1];
+    resArrMain[0] = '\0';
+
+    for(int i = n - 1; i >= 0; i--){
+        std::strcat(resArrMain, word[i][i]);
     }
 
     return resArrMain;
+
+}
+
+char* concatenateStrSec(char*** word, int n){
+    size_t maxLenght = 0;
+
+    for(int i = 0; i < n; i++){
+        for(int j = n - 1; j >= n - i - 1; j--){
+            maxLenght += std::strlen(word[i][j]);
+        }
+    }
+
+    char* resArrSec = new char [maxLenght + 1];
+    resArrSec[0] = '\0';
+
+    for(int i = 0; i < n; i++){
+        for(int j = n - 1; j >= n - i - 1; j--){
+            std::strcat(resArrSec, word[i][j]);
+        }
+    }
+
+    return resArrSec;
 
 }
